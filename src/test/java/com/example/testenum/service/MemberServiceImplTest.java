@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
@@ -86,54 +85,54 @@ public class MemberServiceImplTest {
 
         Member normalMemberResult;
 
-        Throwable thrown = catchThrowable(() -> memberService.updateStatus1(normalStatusMember, MemberStatus.NORMAL));
+        Throwable thrown = catchThrowable(() -> memberService.updateStatusWithCheck(normalStatusMember, MemberStatus.NORMAL));
 
         assertThat(thrown).as("회원 상태 일반 -> 일반")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("같은 상태로 변경할 수 없습니다.");
 
         normalStatusMember.setStatus(MemberStatus.NORMAL); // 상태값 리셋
-        normalMemberResult = memberService.updateStatus1(normalStatusMember, MemberStatus.DORMANT);
+        normalMemberResult = memberService.updateStatusWithCheck(normalStatusMember, MemberStatus.DORMANT);
         assertThat(normalMemberResult.getStatus()).as("회원 상태 일반 -> 휴면")
                 .isEqualTo(MemberStatus.DORMANT);
 
         normalStatusMember.setStatus(MemberStatus.NORMAL); // 상태값 리셋
-        normalMemberResult = memberService.updateStatus1(normalStatusMember, MemberStatus.WITHDRAWAL);
+        normalMemberResult = memberService.updateStatusWithCheck(normalStatusMember, MemberStatus.WITHDRAWAL);
         assertThat(normalMemberResult.getStatus()).as("회원 상태 일반 -> 탈퇴")
                 .isEqualTo(MemberStatus.WITHDRAWAL);
 
         Member dormantMemberResult;
-        dormantMemberResult = memberService.updateStatus1(dormantStatusMember, MemberStatus.NORMAL);
+        dormantMemberResult = memberService.updateStatusWithCheck(dormantStatusMember, MemberStatus.NORMAL);
         assertThat(dormantMemberResult.getStatus()).as("회원 상태 휴면 -> 일반")
                 .isEqualTo(MemberStatus.NORMAL);
 
         dormantMemberResult.setStatus(MemberStatus.DORMANT); // 상태값 리셋
 
-        Throwable thrown2 = catchThrowable(() -> memberService.updateStatus1(dormantStatusMember, MemberStatus.DORMANT));
+        Throwable thrown2 = catchThrowable(() -> memberService.updateStatusWithCheck(dormantStatusMember, MemberStatus.DORMANT));
 
         assertThat(thrown2).as("회원 상태 휴면 -> 휴면")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("같은 상태로 변경할 수 없습니다.");
 
         dormantMemberResult.setStatus(MemberStatus.DORMANT); // 상태값 리셋
-        thrown2 = catchThrowable(() -> memberService.updateStatus1(dormantStatusMember, MemberStatus.WITHDRAWAL));
+        thrown2 = catchThrowable(() -> memberService.updateStatusWithCheck(dormantStatusMember, MemberStatus.WITHDRAWAL));
         assertThat(thrown2).as("회원 상태 휴면 -> 탈퇴")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("휴면회원은 탈퇴 상태로 변경 불가능");
 
-        Throwable thrown3 = catchThrowable(() -> memberService.updateStatus1(withdrawalStatusMember, MemberStatus.NORMAL));
+        Throwable thrown3 = catchThrowable(() -> memberService.updateStatusWithCheck(withdrawalStatusMember, MemberStatus.NORMAL));
         assertThat(thrown3).as("회원 상태 탈퇴 -> 일반")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("탈퇴회원은 어떤 상태로든 변경 불가능");
 
         withdrawalStatusMember.setStatus(MemberStatus.WITHDRAWAL); // 상태값 리셋
-        thrown3 = catchThrowable(() -> memberService.updateStatus1(withdrawalStatusMember, MemberStatus.DORMANT));
+        thrown3 = catchThrowable(() -> memberService.updateStatusWithCheck(withdrawalStatusMember, MemberStatus.DORMANT));
         assertThat(thrown3).as("회원 상태 탈퇴 -> 휴면")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("탈퇴회원은 어떤 상태로든 변경 불가능");
 
         withdrawalStatusMember.setStatus(MemberStatus.WITHDRAWAL); // 상태값 리셋
-        thrown3 = catchThrowable(() -> memberService.updateStatus1(withdrawalStatusMember, MemberStatus.WITHDRAWAL));
+        thrown3 = catchThrowable(() -> memberService.updateStatusWithCheck(withdrawalStatusMember, MemberStatus.WITHDRAWAL));
         assertThat(thrown3).as("회원 상태 탈퇴 -> 탈퇴")
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("같은 상태로 변경할 수 없습니다.");
@@ -149,50 +148,50 @@ public class MemberServiceImplTest {
                 .build();
 
         // 일반회원
-        Throwable thrown1 = catchThrowable(() -> memberService.updateStatus(member, AdvencedMemberStatus.NORMAL));
+        Throwable thrown1 = catchThrowable(() -> memberService.updateStatusWithEnum(member, AdvencedMemberStatus.NORMAL));
         assertThat(thrown1).as("회원 상태 일반 -> 일반")
-                .isInstanceOf(MemberStatusSwitchException.class);
+                .isInstanceOf(RuntimeException.class);
 
         AdvencedMember memberResult;
         member.setStatus(AdvencedMemberStatus.NORMAL); // 상태 초기화
-        memberResult = memberService.updateStatus(member, AdvencedMemberStatus.DORMANT);
+        memberResult = memberService.updateStatusWithEnum(member, AdvencedMemberStatus.DORMANT);
         assertThat(memberResult.getStatus()).as("회원 사태 일반 -> 휴면")
                 .isEqualTo(AdvencedMemberStatus.DORMANT);
 
         member.setStatus(AdvencedMemberStatus.NORMAL); // 상태 초기화
-        memberResult = memberService.updateStatus(member, AdvencedMemberStatus.WITHDRAWAL);
+        memberResult = memberService.updateStatusWithEnum(member, AdvencedMemberStatus.WITHDRAWAL);
         assertThat(memberResult.getStatus()).as("회원 사태 일반 -> 탈퇴")
                 .isEqualTo(AdvencedMemberStatus.WITHDRAWAL);
 
         // 휴면회원
         AdvencedMember domantMemberResult;
-        domantMemberResult = memberService.updateStatus(dormantMember, AdvencedMemberStatus.NORMAL);
+        domantMemberResult = memberService.updateStatusWithEnum(dormantMember, AdvencedMemberStatus.NORMAL);
         assertThat(domantMemberResult.getStatus()).as("회원 사태 휴면 -> 일반")
                 .isEqualTo(AdvencedMemberStatus.NORMAL);
 
         dormantMember.setStatus(AdvencedMemberStatus.DORMANT); // 상태 초기화
-        Throwable thrown21 = catchThrowable(() -> memberService.updateStatus(dormantMember, AdvencedMemberStatus.DORMANT));
+        Throwable thrown21 = catchThrowable(() -> memberService.updateStatusWithEnum(dormantMember, AdvencedMemberStatus.DORMANT));
         assertThat(thrown21).as("회원 상태 휴면 -> 휴면")
-                .isInstanceOf(MemberStatusSwitchException.class);
+                .isInstanceOf(RuntimeException.class);
 
         dormantMember.setStatus(AdvencedMemberStatus.DORMANT); // 상태 초기화
-        Throwable thrown22 = catchThrowable(() -> memberService.updateStatus(dormantMember, AdvencedMemberStatus.WITHDRAWAL));
+        Throwable thrown22 = catchThrowable(() -> memberService.updateStatusWithEnum(dormantMember, AdvencedMemberStatus.WITHDRAWAL));
         assertThat(thrown22).as("회원 사태 휴면 -> 탈퇴")
                 .isInstanceOf(MemberStatusSwitchException.class);
 
         // 탈퇴회원
-        Throwable thrown31 = catchThrowable(() -> memberService.updateStatus(withdrawalMember, AdvencedMemberStatus.NORMAL));
+        Throwable thrown31 = catchThrowable(() -> memberService.updateStatusWithEnum(withdrawalMember, AdvencedMemberStatus.NORMAL));
         assertThat(thrown31).as("회원 상태 탈퇴 -> 일반")
                 .isInstanceOf(MemberStatusSwitchException.class);
 
         withdrawalMember.setStatus(AdvencedMemberStatus.WITHDRAWAL); // 상태 초기화
-        Throwable thrown32 = catchThrowable(() -> memberService.updateStatus(withdrawalMember, AdvencedMemberStatus.DORMANT));
+        Throwable thrown32 = catchThrowable(() -> memberService.updateStatusWithEnum(withdrawalMember, AdvencedMemberStatus.DORMANT));
         assertThat(thrown32).as("회원 상태 탈퇴 -> 휴면")
                 .isInstanceOf(MemberStatusSwitchException.class);
 
         withdrawalMember.setStatus(AdvencedMemberStatus.WITHDRAWAL); // 상태 초기화
-        Throwable thrown33 = catchThrowable(() -> memberService.updateStatus(withdrawalMember, AdvencedMemberStatus.WITHDRAWAL));
+        Throwable thrown33 = catchThrowable(() -> memberService.updateStatusWithEnum(withdrawalMember, AdvencedMemberStatus.WITHDRAWAL));
         assertThat(thrown33).as("회원 상태 탈퇴 -> 탈퇴")
-                .isInstanceOf(MemberStatusSwitchException.class);
+                .isInstanceOf(RuntimeException.class);
     }
 }

@@ -19,7 +19,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member updateStatus1(Member member, MemberStatus status) {
+    public Member updateStatusWithCheck(Member member, MemberStatus status) {
 
         if (member.getStatus() == status) {
             log.error("같은 상태로 변경할 수 없습니다.");
@@ -53,7 +53,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public AdvencedMember updateStatus(AdvencedMember member, AdvencedMemberStatus status) {
+    public AdvencedMember updateStatusWithEnum(AdvencedMember member, AdvencedMemberStatus status) {
+
+        if (member.getStatus() == status) {
+            log.error("같은 상태로 변경할 수 없습니다.");
+            throw new RuntimeException("같은 상태로 변경할 수 없습니다.");
+        }
 
         if (!member.getStatus().isStatusSwitchable(status)) {
             log.error("변경할 수 있는 상태값이 아님");
@@ -67,4 +72,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    private void test() {
+        AdvencedMember member = new AdvencedMember.MemberBuilder("Gil-dong", "홍길동", AdvencedMemberStatus.NORMAL).build();
+
+        //TODO: switch with IDE
+
+
+        //TODO: foreach
+
+    }
 }

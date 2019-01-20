@@ -6,8 +6,27 @@ import com.example.testenum.model.Member;
 import com.example.testenum.model.MemberStatus;
 
 public interface MemberService {
+    /**
+     * 아무 조건 없이 회원 상태 수정
+     * @param member
+     * @param status
+     * @return
+     */
     Member updateStatus(Member member, MemberStatus status);
-    Member updateStatus1(Member member, MemberStatus status);
 
-    AdvencedMember updateStatus(AdvencedMember member, AdvencedMemberStatus status);
+    /**
+     * 회원 상태 체크 후 수정
+     * @param member
+     * @param status
+     * @return
+     */
+    Member updateStatusWithCheck(Member member, MemberStatus status);
+
+    /**
+     * Enum 클래스를 사용한 회원 상태 수정
+     * @param member
+     * @param status
+     * @return
+     */
+    AdvencedMember updateStatusWithEnum(AdvencedMember member, AdvencedMemberStatus status);
 }

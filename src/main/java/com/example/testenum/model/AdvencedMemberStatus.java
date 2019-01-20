@@ -9,11 +9,11 @@ public enum AdvencedMemberStatus {
     WITHDRAWAL("03", Arrays.asList());
 
     private String code;
-    private List<String> switchableStatusList;
+    private List<String> switchableStatusCodeList;
 
-    AdvencedMemberStatus(String code, List<String> asList) {
+    AdvencedMemberStatus(String code, List<String> switchableStatusCodeList) {
         this.code = code;
-        this.switchableStatusList = asList;
+        this.switchableStatusCodeList = switchableStatusCodeList;
     }
 
     public String getCode() {
@@ -21,6 +21,6 @@ public enum AdvencedMemberStatus {
     }
 
     public boolean isStatusSwitchable(AdvencedMemberStatus status) {
-        return switchableStatusList.contains(status.getCode());
+        return switchableStatusCodeList.contains(status.getCode());
     }
 }
