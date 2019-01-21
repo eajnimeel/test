@@ -81,4 +81,9 @@ public class MemberServiceImpl implements MemberService {
         //TODO: foreach
 
     }
+
+    private void test1() {
+        //new InternalEnumMember.MemberBuilder("id", "name", InternalMemberStatus.NORMAL).build();
+        new InternalClassEnumMember.MemberBuilder("id", "name", InternalClassEnumMember.InternalClassMemberStatus.NORMAL);
+    }
 }
